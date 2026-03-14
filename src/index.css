@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-app: #0F0F0E;
+  --color-sidebar: #161614;
+  --color-surface: #1C1C1A;
+  --color-surface-elevated: #242422;
+  --color-border-dark: #2A2A27;
+  --color-text-primary: #F0EFE9;
+  --color-text-secondary: #8A8A82;
+  --color-text-placeholder: #4A4A45;
+  --color-accent-search: #4AABEC;
+  --color-accent-data: #3ECF72;
+  --color-accent-research: #E8C547;
+  --color-accent-strategy: #A855F7;
+  --font-sans: "Inter", sans-serif;
+  --radius-default: 10px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+html, body {
+  font-family: var(--font-sans);
+  background-color: var(--color-app);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-app);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-dark);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-placeholder);
+}
+
+/* Animations */
+@keyframes pulse-dot {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
