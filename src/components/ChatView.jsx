@@ -4,11 +4,12 @@ import ActivationSequence from './ActivationSequence';
 import ResponseBlock from './ResponseBlock';
 import { MOCK_CONVERSATIONS } from '../lib/constants';
 
-export default function ChatView({ initialConversationId, initialQuery, onInitialQueryHandled, onChatStarted, sidebarCollapsed }) {
+export default function ChatView({ initialConversationId, initialQuery, onChatStarted }) {
   const [messages, setMessages] = useState([]);
   const [activating, setActivating] = useState(false);
   const [pendingConvo, setPendingConvo] = useState(null);
   const bottomRef = useRef(null);
+  const handledInitialQueryRef = useRef(null);
 
   // Load a pre-existing conversation
   useEffect(() => {
@@ -47,11 +48,19 @@ export default function ChatView({ initialConversationId, initialQuery, onInitia
   }, [onChatStarted]);
 
   useEffect(() => {
-    if (initialQuery && initialQuery.trim()) {
-      handleSubmit(initialQuery);
-      if (onInitialQueryHandled) onInitialQueryHandled();
+    const trimmed = initialQuery?.trim();
+    if (!trimmed) return;
+    if (handledInitialQueryRef.current === trimmed) return;
+
+    handledInitialQueryRef.current = trimmed;
+    handleSubmit(trimmed);
+  }, [initialQuery, handleSubmit]);
+
+  useEffect(() => {
+    if (!initialQuery) {
+      handledInitialQueryRef.current = null;
     }
-  }, [initialQuery, handleSubmit, onInitialQueryHandled]);
+  }, [initialQuery]);
 
   const handleActivationDone = () => {
     setActivating(false);

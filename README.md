@@ -1,83 +1,106 @@
-﻿# ESA â€” Enterprise Strategy Agent
+# ESA - Enterprise Strategy Agent
 
-A React single-page application for an enterprise AI assistant that orchestrates multiple specialized agents (Search, Data Analyst, Research, Strategy) to answer business queries with rich, contextual responses.
+A React single-page app for an enterprise AI assistant that coordinates multiple specialized agents (Search, Data Analyst, Research, Strategy) to answer business-style queries with contextual responses.
+
+## Current Status
+
+This README reflects the implementation currently in this repo.
+
+### Recently Implemented
+
+1. Home-screen animated radial gradient background tuned to agent accent colors.
+2. Chatbox halo/glow effect while keeping the chatbox in the same layout position.
+3. Greeting name styling update (`Ayush` is bold).
+4. Home-to-chat submit flow fix so first `Enter` triggers agent activation immediately.
+5. CSS import ordering fix (`@import` now placed at the top to satisfy PostCSS/Vite).
+6. Vite dependency alignment to avoid optional native-binding install conflicts.
 
 ## Tech Stack
 
-- **React 19** â€” UI framework
-- **Vite 7** â€” Build tool & dev server
-- **Tailwind CSS 4** â€” Utility-first styling (via `@tailwindcss/vite`)
-- **Lucide React** â€” Icon library
-- **Inter** â€” Google Font
+- React 19
+- Vite 7
+- Tailwind CSS 4 (`@tailwindcss/vite`)
+- Framer Motion
+- Lucide React
+- JavaScript (ESM, not TypeScript)
 
-## Getting Started
+## Implemented Product Features
 
-```bash
-# Install dependencies
-npm install
-
-# Start dev server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-## Features
-
-| Feature | Description |
-|---|---|
-| **Dark Theme** | Full dark palette â€” no light mode, no toggle |
-| **Notion-style Sidebar** | Navigation, inline search over recents, color-coded agent dots |
-| **Agent Cards** | Four themed cards (Search, Data Analyst, Research, Strategy) on the home view |
-| **ChatBox** | Input with `@` mention dropdown to call agents, keyboard navigable |
-| **Activation Sequence** | Animated agent status (scanning â†’ processing â†’ âœ“ done) with pulsing dots |
-| **Response Blocks** | Agent chips, formatted text, chart placeholders, document source cards |
-| **Library Panel** | Scrollable history of all past conversations |
-| **Mock Data** | Three pre-built conversations and 12 library entries â€” no backend needed |
+- Dark-themed app shell with collapsible sidebar.
+- Home view with:
+  - Time-based greeting (`Good morning/afternoon/evening`)
+  - Animated gradient background
+  - Chat input with halo effect
+  - Agent cards for Search, Data Analyst, Research, Strategy
+- Chat input features:
+  - `@` mention dropdown for agent hints
+  - Attach menu UI
+  - Animated placeholder cycling
+  - Enter-to-submit behavior
+- Chat flow:
+  - Query bubble + activation sequence (`scanning`, `processing`, `done`)
+  - Mock response blocks with text/chart/document styles
+- Library and agent-library navigation views backed by mock data.
 
 ## Project Structure
 
-```
+```text
 src/
-â”œâ”€â”€ components/
-â”‚   â”œâ”€â”€ ActivationSequence.jsx   # Pulsing agent status animation
-â”‚   â”œâ”€â”€ AgentCards.jsx           # Four agent cards grid
-â”‚   â”œâ”€â”€ ChatBox.jsx              # Input with @ mention dropdown
-â”‚   â”œâ”€â”€ ChatView.jsx             # Full chat conversation view
-â”‚   â”œâ”€â”€ LibraryPanel.jsx         # All conversations listing
-â”‚   â”œâ”€â”€ ResponseBlock.jsx        # Agent chips, text, chart, document card
-â”‚   â””â”€â”€ Sidebar.jsx              # Notion-style sidebar
-â”œâ”€â”€ lib/
-â”‚   â””â”€â”€ constants.js             # Mock data, agent themes, color palette
-â”œâ”€â”€ App.jsx                      # Main layout & view routing
-â”œâ”€â”€ index.css                    # Tailwind config & global styles
-â””â”€â”€ main.jsx                     # Entry point
+  App.jsx
+  index.css
+  main.jsx
+  assets/
+  lib/
+    constants.js
+    utils.js
+  components/
+    ActivationSequence.jsx
+    AgentCards.jsx
+    AgentLibraryPanel.jsx
+    ChatBox.jsx
+    ChatView.jsx
+    LibraryPanel.jsx
+    ResponseBlock.jsx
+    Sidebar.jsx
+    hooks/
+      useAutoResizeTextarea.js
+    ui/
+      animated-gradient-background.jsx
+      PlaceholdersAndVanishInput.jsx
+      Textarea.jsx
+      TextShimmer.jsx
 ```
 
-## Color Palette
+## Styling Notes
 
-| Token | Hex |
-|---|---|
-| App background | `#0F0F0E` |
-| Sidebar | `#161614` |
-| Card / surface | `#1C1C1A` |
-| Elevated surface | `#242422` |
-| Border / divider | `#2A2A27` |
-| Primary text | `#F0EFE9` |
-| Secondary text | `#8A8A82` |
-| Placeholder text | `#4A4A45` |
+- Design tokens are defined in `src/index.css` via Tailwind `@theme`.
+- Google Fonts import is intentionally at the top of `src/index.css` (required by PostCSS).
+- Agent accent colors:
+  - Search: `#4AABEC`
+  - Data: `#3ECF72`
+  - Research: `#E8C547`
+  - Strategy: `#A855F7`
 
-## Agent Accents
+## Run Locally
 
-| Agent | Color |
-|---|---|
-| Search Agent | `#4AABEC` |
-| Data Analyst | `#3ECF72` |
-| Research Agent | `#E8C547` |
-| Strategy Agent | `#A855F7` |
+```bash
+npm install
+npm run dev
+```
 
-## License
+Production build:
 
-Private project.
+```bash
+npm run build
+npm run preview
+```
 
+## Data Source
+
+No backend is connected right now. Conversation data, recents, and library content are mock values from `src/lib/constants.js`.
+
+## Notes
+
+- The project already uses a reusable UI folder at `src/components/ui`.
+- Tailwind is configured and active.
+- TypeScript and shadcn CLI are not initialized in this codebase yet.

@@ -129,9 +129,7 @@ export default function App() {
             key={activeConvoId || 'new'}
             initialConversationId={activeConvoId}
             initialQuery={pendingHomeQuery}
-            onInitialQueryHandled={() => setPendingHomeQuery(null)}
-            onChatStarted={() => {}}
-            sidebarCollapsed={sidebarCollapsed}
+            onChatStarted={() => setPendingHomeQuery(null)}
           />
         )}
       </main>
