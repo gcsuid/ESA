@@ -8,7 +8,7 @@ const iconMap = {
   lightbulb: Lightbulb,
 };
 
-export default function AgentCards() {
+export default function AgentCards({ onSelectAgent }) {
   const agents = Object.values(AGENT_THEMES);
 
   return (
@@ -18,6 +18,15 @@ export default function AgentCards() {
         return (
           <div
             key={agent.id}
+            onClick={() => onSelectAgent?.(agent)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectAgent?.(agent);
+              }
+            }}
+            role="button"
+            tabIndex={0}
             className="flex-1 rounded-xl p-5 border cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
             style={{
               backgroundColor: agent.bg,

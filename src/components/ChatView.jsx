@@ -107,7 +107,7 @@ export default function ChatView({ initialConversationId, initialQuery, onChatSt
 
       {/* Chatbox pinned at bottom — NOT fixed, sits in normal flow */}
       <div className="flex-shrink-0 px-6 py-4 bg-app border-t border-border-dark/30">
-        <ChatBox onSubmit={handleSubmit} />
+        <ChatBox onSubmit={handleSubmit} isProcessing={activating} />
       </div>
     </div>
   );

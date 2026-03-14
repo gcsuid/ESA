@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Home, BookOpen, Settings, LogOut,
   LayoutGrid, ChevronsLeft, ChevronsRight,
@@ -29,20 +29,19 @@ export default function Sidebar({
 }) {
   const [activeWorkspaceAgent, setActiveWorkspaceAgent] = useState(null);
   const workspaceAgents = Object.values(AGENT_THEMES);
-  const expandedAgentId =
-    currentView === 'agent-library' && activeAgentId
-      ? activeAgentId
-      : activeWorkspaceAgent;
+  const expandedAgentId = activeWorkspaceAgent;
 
   const getLatestTwoForAgent = (agentId) =>
     MOCK_LIBRARY.filter((item) => item.agents.includes(agentId)).slice(0, 2);
 
-  const handleWorkspaceAgentClick = (agentId) => {
-    if (expandedAgentId === agentId) {
-      if (onOpenAgentLibrary) onOpenAgentLibrary(agentId);
-      return;
+  useEffect(() => {
+    if (currentView === 'agent-library' && activeAgentId) {
+      setActiveWorkspaceAgent(activeAgentId);
     }
-    setActiveWorkspaceAgent(agentId);
+  }, [currentView, activeAgentId]);
+
+  const handleWorkspaceAgentClick = (agentId) => {
+    setActiveWorkspaceAgent((prev) => (prev === agentId ? null : agentId));
   };
 
   const navItemClass = (active) =>
@@ -110,75 +109,77 @@ export default function Sidebar({
       {/* Divider */}
       <div className="mx-3 my-3 border-t border-border-dark" />
 
-      {/* Workspace */}
-      <div className="px-2 mb-2">
-        <p className="px-2 mb-2 text-[11px] font-medium uppercase tracking-wider text-text-placeholder">Workspace</p>
-        <div className="flex flex-col gap-0.5">
-          {workspaceAgents.map((agent) => {
-            const latestTwo = getLatestTwoForAgent(agent.id);
-            const isSelected = expandedAgentId === agent.id;
-            return (
-              <div key={agent.id}>
-                <div
-                  onClick={() => handleWorkspaceAgentClick(agent.id)}
-                  className={`flex items-center justify-between gap-2 px-2 h-9 rounded-lg cursor-pointer transition-all duration-200
-                    ${isSelected ? 'bg-surface-elevated text-text-primary' : 'text-text-secondary hover:bg-surface-elevated hover:text-text-primary'}`}
-                >
-                  <span className="flex items-center gap-2 min-w-0">
-                    <AgentDot agentId={agent.id} />
-                    <span className="text-[13px] truncate">{agent.name}</span>
-                  </span>
-                  <span className="text-[11px] text-text-placeholder flex-shrink-0">{latestTwo.length}</span>
-                </div>
-
-                {expandedAgentId === agent.id && (
-                  <div className="ml-5 mt-1 mb-2 flex flex-col gap-1">
-                    {latestTwo.map((item) => (
-                      <div
-                        key={`${agent.id}-${item.id}`}
-                        onClick={() => onSelectRecent(item.id)}
-                        className="px-2 py-1.5 rounded-md text-[12px] text-text-secondary hover:text-text-primary hover:bg-surface-elevated cursor-pointer truncate transition-all duration-200"
-                        title={item.title}
-                      >
-                        {item.title}
-                      </div>
-                    ))}
-                    <div
-                      onClick={() => onOpenAgentLibrary && onOpenAgentLibrary(agent.id)}
-                      className="px-2 py-1 text-[11px] text-text-placeholder hover:text-text-primary cursor-pointer transition-colors duration-200"
-                    >
-                      View full history
-                    </div>
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        {/* Workspace */}
+        <div className="px-2 mb-2">
+          <p className="px-2 mb-2 text-[11px] font-medium uppercase tracking-wider text-text-placeholder">Workspace</p>
+          <div className="flex flex-col gap-0.5">
+            {workspaceAgents.map((agent) => {
+              const latestTwo = getLatestTwoForAgent(agent.id);
+              const isSelected = expandedAgentId === agent.id;
+              return (
+                <div key={agent.id}>
+                  <div
+                    onClick={() => handleWorkspaceAgentClick(agent.id)}
+                    className={`flex items-center justify-between gap-2 px-2 h-9 rounded-lg cursor-pointer transition-all duration-200
+                      ${isSelected ? 'bg-surface-elevated text-text-primary' : 'text-text-secondary hover:bg-surface-elevated hover:text-text-primary'}`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <AgentDot agentId={agent.id} />
+                      <span className="text-[13px] truncate">{agent.name}</span>
+                    </span>
+                    <span className="text-[11px] text-text-placeholder flex-shrink-0">{latestTwo.length}</span>
                   </div>
-                )}
-              </div>
-            );
-          })}
+
+                  {expandedAgentId === agent.id && (
+                    <div className="ml-5 mt-1 mb-2 flex flex-col gap-1">
+                      {latestTwo.map((item) => (
+                        <div
+                          key={`${agent.id}-${item.id}`}
+                          onClick={() => onSelectRecent(item.id)}
+                          className="px-2 py-1.5 rounded-md text-[12px] text-text-secondary hover:text-text-primary hover:bg-surface-elevated cursor-pointer truncate transition-all duration-200"
+                          title={item.title}
+                        >
+                          {item.title}
+                        </div>
+                      ))}
+                      <div
+                        onClick={() => onOpenAgentLibrary && onOpenAgentLibrary(agent.id)}
+                        className="px-2 py-1 text-[11px] text-text-placeholder hover:text-text-primary cursor-pointer transition-colors duration-200"
+                      >
+                        View full history
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Divider */}
-      <div className="mx-3 my-3 border-t border-border-dark" />
+        {/* Divider */}
+        <div className="mx-3 my-3 border-t border-border-dark" />
 
-      {/* Recents */}
-      <div className="flex-1 overflow-y-auto px-2">
-        <p className="px-2 mb-2 text-[11px] font-medium uppercase tracking-wider text-text-placeholder">Recents</p>
-        <div className="flex flex-col gap-0.5">
-          {MOCK_RECENTS.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => onSelectRecent(item.id)}
-              className={`flex items-center justify-between gap-2 px-2 h-9 rounded-lg cursor-pointer transition-all duration-200 group
-                ${activeRecentId === item.id ? 'bg-surface-elevated' : 'hover:bg-surface-elevated'}`}
-            >
-              <span className="text-[13px] text-text-secondary truncate group-hover:text-text-primary transition-colors duration-200">
-                {item.title}
-              </span>
-              <span className="flex items-center gap-1 flex-shrink-0">
-                {item.agents.map((a) => <AgentDot key={a} agentId={a} />)}
-              </span>
-            </div>
-          ))}
+        {/* Recents */}
+        <div className="px-2 pb-2">
+          <p className="px-2 mb-2 text-[11px] font-medium uppercase tracking-wider text-text-placeholder">Recents</p>
+          <div className="flex flex-col gap-0.5">
+            {MOCK_RECENTS.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => onSelectRecent(item.id)}
+                className={`flex items-center justify-between gap-2 px-2 h-9 rounded-lg cursor-pointer transition-all duration-200 group
+                  ${activeRecentId === item.id ? 'bg-surface-elevated' : 'hover:bg-surface-elevated'}`}
+              >
+                <span className="text-[13px] text-text-secondary truncate group-hover:text-text-primary transition-colors duration-200">
+                  {item.title}
+                </span>
+                <span className="flex items-center gap-1 flex-shrink-0">
+                  {item.agents.map((a) => <AgentDot key={a} agentId={a} />)}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

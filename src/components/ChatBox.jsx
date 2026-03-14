@@ -23,13 +23,12 @@ const ATTACH_OPTIONS = [
   { icon: MoreHorizontal, label: 'More', desc: 'Additional options' },
 ];
 
-export default function ChatBox({ onSubmit }) {
+export default function ChatBox({ onSubmit, prefillAgentName, onPrefillApplied, isProcessing = false }) {
   const [value, setValue] = useState('');
   const [showMention, setShowMention] = useState(false);
   const [showAttach, setShowAttach] = useState(false);
   const [mentionIdx, setMentionIdx] = useState(0);
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
   const attachRef = useRef(null);
   const placeholderInterval = useRef(null);
 
@@ -74,22 +73,39 @@ export default function ChatBox({ onSubmit }) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  useEffect(() => {
+    if (!prefillAgentName || isProcessing) return;
+
+    const mentionText = `@${prefillAgentName} `;
+    setValue((prev) => {
+      let next = prev;
+      for (const agent of agentList) {
+        const agentMention = `@${agent.name} `;
+        if (next.startsWith(agentMention)) {
+          next = next.slice(agentMention.length);
+          break;
+        }
+      }
+      return `${mentionText}${next}`;
+    });
+    setShowMention(false);
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+      adjustHeight();
+    });
+    if (onPrefillApplied) onPrefillApplied();
+  }, [prefillAgentName, onPrefillApplied, isProcessing, textareaRef, adjustHeight]);
+
   const handleSubmitAction = () => {
-    if (!hasText || submitted) return;
+    if (!hasText || isProcessing) return;
     const queryText = value.trim();
-    setSubmitted(true);
     setValue('');
     adjustHeight(true);
     onSubmit(queryText);
-
-    // Reset submitted state after a delay (matches activation sequence timing)
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 4000);
   };
 
   const handleChange = (e) => {
-    if (submitted) return;
+    if (isProcessing) return;
     const v = e.target.value;
     setValue(v);
     adjustHeight();
@@ -193,12 +209,12 @@ export default function ChatBox({ onSubmit }) {
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          disabled={submitted}
+          disabled={isProcessing}
           className={cn(
             "w-full bg-transparent border-none rounded-[14px] pl-12 pr-12 py-3.5 text-[15px] text-text-primary resize-none leading-[1.5]",
             "placeholder:text-transparent focus-visible:ring-0 focus-visible:ring-offset-0",
             "min-h-[52px]",
-            submitted && "opacity-60 cursor-not-allowed"
+            isProcessing && "opacity-60 cursor-not-allowed"
           )}
         />
 
@@ -207,16 +223,16 @@ export default function ChatBox({ onSubmit }) {
           onClick={handleSubmitAction}
           className={cn(
             "absolute right-3 top-3 z-50 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200",
-            submitted
+            isProcessing
               ? "bg-transparent"
               : hasText
                 ? "bg-text-primary text-app"
                 : "bg-border-dark text-text-placeholder"
           )}
           type="button"
-          disabled={submitted}
+          disabled={isProcessing}
         >
-          {submitted ? (
+          {isProcessing ? (
             <div
               className="w-4 h-4 bg-text-primary rounded-sm animate-spin"
               style={{ animationDuration: "3s" }}
@@ -229,7 +245,7 @@ export default function ChatBox({ onSubmit }) {
         {/* Animated placeholder */}
         <div className="absolute inset-0 flex items-center pointer-events-none">
           <AnimatePresence mode="wait">
-            {!value && !submitted && (
+            {!value && !isProcessing && (
               <motion.p
                 initial={{ y: 5, opacity: 0 }}
                 key={`placeholder-${currentPlaceholder}`}
@@ -248,7 +264,7 @@ export default function ChatBox({ onSubmit }) {
       {/* Status text below input */}
       <div className="h-5 mt-1.5 text-center">
         <AnimatePresence mode="wait">
-          {submitted ? (
+          {isProcessing ? (
             <motion.p
               key="thinking"
               initial={{ opacity: 0, y: 4 }}

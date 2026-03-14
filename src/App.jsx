@@ -33,6 +33,7 @@ export default function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [pendingHomeQuery, setPendingHomeQuery] = useState(null);
   const [activeAgentId, setActiveAgentId] = useState(null);
+  const [homePrefillAgent, setHomePrefillAgent] = useState(null);
 
   const handleNavigate = (target) => {
     setView(target);
@@ -48,6 +49,7 @@ export default function App() {
 
   const handleSubmitFromHome = (query) => {
     setPendingHomeQuery(query);
+    setHomePrefillAgent(null);
     setView('chat');
     setActiveConvoId(null);
   };
@@ -60,6 +62,10 @@ export default function App() {
   const handleOpenAgentLibrary = (agentId) => {
     setActiveAgentId(agentId);
     setView('agent-library');
+  };
+
+  const handleHomeAgentCardClick = (agent) => {
+    setHomePrefillAgent(agent.name);
   };
 
   return (
@@ -102,10 +108,14 @@ export default function App() {
             <div className="relative w-full max-w-[680px] mx-auto">
               <div className="pointer-events-none absolute -inset-4 rounded-[20px] bg-[radial-gradient(circle_at_center,rgba(74,171,236,0.20),rgba(168,85,247,0.16),rgba(15,15,14,0)_72%)] blur-2xl" />
               <div className="relative">
-                <ChatBox onSubmit={handleSubmitFromHome} />
+                <ChatBox
+                  onSubmit={handleSubmitFromHome}
+                  prefillAgentName={homePrefillAgent}
+                  onPrefillApplied={() => setHomePrefillAgent(null)}
+                />
               </div>
             </div>
-            <AgentCards />
+            <AgentCards onSelectAgent={handleHomeAgentCardClick} />
             </div>
           </div>
         )}
