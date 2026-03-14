@@ -67,7 +67,8 @@ export default function App() {
         {view === 'home' && (
           <div className="flex-1 flex flex-col items-center justify-center px-6 transition-opacity duration-300">
             <TextShimmer as="h1" className="text-[28px] font-light mb-2">
-              {getGreeting()}, Ayush
+              {getGreeting()},{' '}
+              <span className="font-semibold">Ayush</span>
             </TextShimmer>
             <TextShimmer as="p" className="text-sm mb-8">
               Put agents to work!
