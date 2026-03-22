@@ -2,18 +2,8 @@
 
 A React single-page app for an enterprise AI assistant that coordinates multiple specialized agents (Search, Data Analyst, Research, Strategy) to answer business-style queries with contextual responses.
 
-## Current Status
 
-This README reflects the implementation currently in this repo.
 
-### Recently Implemented
-
-1. Home-screen animated radial gradient background tuned to agent accent colors.
-2. Chatbox halo/glow effect while keeping the chatbox in the same layout position.
-3. Greeting name styling update (`Ayush` is bold).
-4. Home-to-chat submit flow fix so first `Enter` triggers agent activation immediately.
-5. CSS import ordering fix (`@import` now placed at the top to satisfy PostCSS/Vite).
-6. Vite dependency alignment to avoid optional native-binding install conflicts.
 
 ## Tech Stack
 
@@ -71,36 +61,10 @@ src/
       TextShimmer.jsx
 ```
 
-## Styling Notes
+## Motive
 
-- Design tokens are defined in `src/index.css` via Tailwind `@theme`.
-- Google Fonts import is intentionally at the top of `src/index.css` (required by PostCSS).
-- Agent accent colors:
-  - Search: `#4AABEC`
-  - Data: `#3ECF72`
-  - Research: `#E8C547`
-  - Strategy: `#A855F7`
+This app was the second take home assignment after the first one for Adya.ai. Was given the PRD, and was asked to build a prototype frontend for the same in 5 hours. Approached the same as a mixture of Notion and perplexity aesthetics. I am attaching the LOOM VIDEO of the same for your reference.
 
-## Run Locally
+## LOOM VIDEO
 
-```bash
-npm install
-npm run dev
-```
-
-Production build:
-
-```bash
-npm run build
-npm run preview
-```
-
-## Data Source
-
-No backend is connected right now. Conversation data, recents, and library content are mock values from `src/lib/constants.js`.
-
-## Notes
-
-- The project already uses a reusable UI folder at `src/components/ui`.
-- Tailwind is configured and active.
-- TypeScript and shadcn CLI are not initialized in this codebase yet.
+[https://www.loom.com/share/81f64d6aef9d48e08935a1dc73deced4]
